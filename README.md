@@ -1,5 +1,5 @@
-CivicTrack – Community Issue Reporting System
-Transparent Civic Engagement Platform
+##CivicTrack – Community Issue Reporting System
+##Transparent Civic Engagement Platform
 
 ## 📖 Table of Contents
 
