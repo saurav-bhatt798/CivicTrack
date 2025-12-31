@@ -2848,195 +2848,100 @@ jobs:
 
 ```
 CivicTrack/
-├── .github/                          # GitHub workflows and templates
-│   ├── workflows/
-│   │   ├── ci.yml                    # Continuous Integration
-│   │   ├── cd.yml                    # Continuous Deployment
-│   │   ├── security-scan.yml         # Security scanning
-│   │   └── performance-test.yml      # Performance testing
-│   └── ISSUE_TEMPLATE/              # Issue templates
+├── public/
+│   ├── index.html
+│   ├── manifest.json
+│   └── assets/
+│       ├── images/
+│       └── icons/
 │
-├── public/                          # Static assets
-│   ├── index.html                   # Main HTML file
-│   ├── manifest.json                # PWA manifest
-│   ├── robots.txt                   # SEO configuration
-│   ├── sitemap.xml                  # Sitemap for SEO
-│   └── assets/                      # Static assets
-│       ├── icons/                   # App icons
-│       ├── images/                  # Images
-│       └── fonts/                   # Custom fonts
+├── src/
+│   ├── App.jsx
+│   ├── main.jsx
+│   ├── firebase.js
+│   ├── routes.jsx
 │
-├── src/                             # Source code
-│   ├── components/                  # Reusable components
-│   │   ├── common/                  # Common components
+│   ├── components/              # Reusable UI parts
+│   │   ├── common/
 │   │   │   ├── Button/
 │   │   │   ├── Input/
-│   │   │   ├── Modal/
-│   │   │   ├── Card/
-│   │   │   └── Loading/
-│   │   ├── layout/                  # Layout components
+│   │   │   └── Modal/
+│   │   ├── layout/
 │   │   │   ├── Header/
-│   │   │   ├── Footer/
 │   │   │   ├── Sidebar/
 │   │   │   └── MainLayout/
-│   │   ├── reports/                 # Report-related components
-│   │   │   ├── ReportForm/
-│   │   │   ├── ReportCard/
-│   │   │   ├── ReportList/
-│   │   │   └── ReportDetail/
-│   │   ├── map/                     # Map components
-│   │   │   ├── MapView/
-│   │   │   ├── Marker/
-│   │   │   ├── Cluster/
-│   │   │   └── Controls/
-│   │   └── admin/                   # Admin components
-│   │       ├── Dashboard/
-│   │       ├── Analytics/
-│   │       ├── UserManagement/
-│   │       └── DepartmentManagement/
-│   │
-│   ├── pages/                       # Page components
-│   │   ├── Home/                    # Landing page
-│   │   ├── Login/                   # Login page
-│   │   ├── Signup/                  # Signup page
-│   │   ├── Dashboard/               # User dashboard
-│   │   ├── Report/                  # Report creation
-│   │   ├── Reports/                 # Reports listing
-│   │   ├── Map/                     # Public map
-│   │   ├── Profile/                 # User profile
-│   │   └── admin/                   # Admin pages
+│   │   ├── reports/
+│   │   ├── map/
+│   │   └── admin/
+│
+│   ├── pages/                   # Screens/Pages
+│   │   ├── Home/
+│   │   ├── Login/
+│   │   ├── Signup/
+│   │   ├── Dashboard/
+│   │   ├── Profile/
+│   │   └── admin/
 │   │       ├── AdminDashboard/
 │   │       ├── Reports/
-│   │       ├── Users/
-│   │       └── Settings/
-│   │
-│   ├── layouts/                     # Layout wrappers
-│   │   ├── MainLayout/              # Main layout
-│   │   ├── AuthLayout/              # Auth layout
-│   │   ├── AdminLayout/             # Admin layout
-│   │   └── PublicLayout/            # Public layout
-│   │
-│   ├── hooks/                       # Custom React hooks
-│   │   ├── useAuth.js               # Authentication hook
-│   │   ├── useReports.js            # Reports hook
-│   │   ├── useGeolocation.js        # Geolocation hook
-│   │   ├── useNotifications.js      # Notifications hook
-│   │   ├── useDebounce.js           # Debounce hook
-│   │   └── useLocalStorage.js       # Local storage hook
-│   │
-│   ├── context/                     # React Context providers
-│   │   ├── AuthContext/             # Auth context
-│   │   ├── ReportContext/           # Report context
-│   │   ├── ThemeContext/            # Theme context
-│   │   ├── NotificationContext/     # Notification context
-│   │   └── LoadingContext/          # Loading context
-│   │
-│   ├── services/                    # Service layer
-│   │   ├── api/                     # API services
-│   │   │   ├── reportService.js
+│   │       └── Users/
+│
+│   ├── layouts/                 # Page layouts
+│   │   ├── AuthLayout/
+│   │   ├── MainLayout/
+│   │   └── AdminLayout/
+│
+│   ├── context/                 # Global state
+│   │   ├── AuthContext/
+│   │   ├── ReportContext/
+│   │   └── ThemeContext/
+│
+│   ├── hooks/                   # Custom hooks
+│   │   ├── useAuth.js
+│   │   ├── useReports.js
+│   │   └── useNotifications.js
+│
+│   ├── services/                # API + Firebase logic
+│   │   ├── api/
 │   │   │   ├── userService.js
-│   │   │   ├── departmentService.js
-│   │   │   └── notificationService.js
-│   │   ├── firebase/                # Firebase services
-│   │   │   ├── auth.js
-│   │   │   ├── firestore.js
-│   │   │   ├── storage.js
-│   │   │   └── functions.js
-│   │   └── external/                # External services
-│   │       ├── mapService.js
-│   │       ├── emailService.js
-│   │       └── smsService.js
-│   │
-│   ├── utils/                       # Utility functions
-│   │   ├── helpers/                 # Helper functions
-│   │   │   ├── formatters.js
+│   │   │   └── reportService.js
+│   │   └── firebase/
+│   │       ├── auth.js
+│   │       ├── firestore.js
+│   │       └── storage.js
+│
+│   ├── utils/                   # Helpers + constants
+│   │   ├── helpers/
 │   │   │   ├── validators.js
-│   │   │   ├── geolocation.js
-│   │   │   └── fileUpload.js
-│   │   ├── constants/               # Constants
-│   │   │   ├── routes.js
-│   │   │   ├── categories.js
-│   │   │   ├── status.js
-│   │   │   └── config.js
-│   │   └── lib/                     # Third-party lib wrappers
-│   │       ├── axios.js
-│   │       ├── leaflet.js
-│   │       └── chartjs.js
-│   │
-│   ├── styles/                      # Global styles
-│   │   ├── globals.css              # Global CSS
-│   │   ├── theme.js                 # Theme configuration
-│   │   └── variables.css            # CSS variables
-│   │
-│   ├── types/                       # TypeScript types
-│   │   ├── Report.ts
-│   │   ├── User.ts
-│   │   ├── Department.ts
-│   │   └── index.ts
-│   │
-│   ├── firebase.js                  # Firebase configuration
-│   ├── App.jsx                      # Main app component
-│   ├── main.jsx                     # Application entry point
-│   └── routes.jsx                   # Route configuration
+│   │   │   └── formatters.js
+│   │   └── constants/
+│   │       ├── routes.js
+│   │       └── status.js
 │
-├── functions/                       # Firebase Cloud Functions
-│   ├── src/                         # TypeScript source
-│   │   ├── triggers/                # Database triggers
-│   │   │   ├── reports/
-│   │   │   ├── users/
-│   │   │   └── comments/
-│   │   ├── callable/                # Callable functions
-│   │   │   ├── reports/
-│   │   │   ├── admin/
-│   │   │   └── analytics/
-│   │   ├── scheduled/               # Scheduled functions
-│   │   │   ├── analytics/
-│   │   │   ├── cleanup/
-│   │   │   └── notifications/
-│   │   └── utils/                   # Utility functions
-│   │       ├── helpers.ts
-│   │       ├── validators.ts
-│   │       └── logger.ts
-│   ├── package.json
-│   └── tsconfig.json
+│   ├── styles/
+│   │   ├── globals.css
+│   │   └── theme.js
 │
-├── tests/                           # Test files
-│   ├── unit/                        # Unit tests
-│   ├── integration/                 # Integration tests
-│   ├── e2e/                         # End-to-end tests
-│   └── fixtures/                    # Test fixtures
+│   └── types/                   # (optional if TS)
 │
-├── scripts/                         # Build and utility scripts
-│   ├── seedData.js                  # Seed database
-│   ├── backup.js                    # Backup script
-│   ├── migrate.js                   # Migration script
-│   └── deploy.js                    # Deployment script
+├── functions/                   # Firebase cloud functions
+│   └── src/
+│       ├── triggers/
+│       ├── callable/
+│       └── utils/
 │
-├── docs/                            # Documentation
-│   ├── api/                         # API documentation
-│   ├── architecture/                # Architecture diagrams
-│   ├── user-guide/                  # User guides
-│   └── developer-guide/             # Developer guides
+├── tests/
+├── scripts/
+├── config/
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   └── postcss.config.js
 │
-├── config/                          # Configuration files
-│   ├── vite.config.js               # Vite configuration
-│   ├── tailwind.config.js           # Tailwind CSS config
-│   ├── postcss.config.js            # PostCSS config
-│   └── eslint.config.js             # ESLint configuration
-│
-├── .env.example                     # Environment variables example
-├── .env.local                       # Local environment variables
-├── .gitignore                       # Git ignore file
-├── .eslintrc.js                     # ESLint configuration
-├── .prettierrc                      # Prettier configuration
-├── package.json                     # Project dependencies
-├── package-lock.json                # Lock file
-├── firebase.json                    # Firebase configuration
-├── firestore.rules                  # Firestore security rules
-├── storage.rules                    # Storage security rules
-├── firestore.indexes.json           # Firestore indexes
-├── README.md                        # This file
-└── LICENSE                          # License file
+├── firebase.json
+├── firestore.rules
+├── storage.rules
+├── package.json
+└── README.md
+
 ```
 
 ---
@@ -3133,207 +3038,12 @@ CivicTrack/
 | **Threat Intelligence** | Proactive threat detection | SIEM integration |
 | **Incident Response** | Automated incident handling | SOAR platform |
 
-### 10. **Monetization Features**
 
-| Feature | Description | Revenue Model |
-|---------|-------------|---------------|
-| **Premium Analytics** | Advanced analytics for departments | Subscription |
-| **API Access Tiers** | Tiered API access for developers | Usage-based |
-| **White-label Licensing** | License platform to other cities | Licensing fees |
-| **Advertising Platform** | Local business advertisements | Ad revenue |
-| **Data Marketplace** | Anonymized data for research | Data licensing |
 
----
 
-## 🎯 Evaluation Criteria Alignment
 
-### 1. **Originality** ⭐⭐⭐⭐⭐
 
-**How CivicTrack Demonstrates Originality:**
 
-#### Unique Approach to Civic Engagement
-- **First-of-its-kind verification system** where citizens verify resolution completion
-- **Gamification elements** to encourage consistent civic participation
-- **AI-powered department assignment** based on workload and expertise
-- **Blockchain integration** for immutable audit trails (planned for Round 2)
-
-#### Innovative Features
-- **AR issue visualization** using mobile cameras
-- **Voice-based reporting** for accessibility
-- **Smart contract automation** for department workflows
-- **Predictive maintenance alerts** based on historical data
-
-#### Research-Backed Design
-- Based on **behavioral science principles** to increase participation
-- **User-centric design** with extensive citizen feedback integration
-- **Data-driven decision making** with real-time analytics
-
-### 2. **Technical Efficiency** ⭐⭐⭐⭐⭐
-
-**Technical Excellence Demonstrated:**
-
-#### Performance Optimization
-- **95+ Lighthouse scores** across all categories
-- **<2 second load time** on 3G connections
-- **Efficient database queries** with proper indexing
-- **Optimized image handling** with automatic compression
-
-#### Code Quality
-- **95%+ test coverage** with comprehensive test suites
-- **Clean architecture** with separation of concerns
-- **Type safety** with TypeScript integration
-- **Automated code quality checks** in CI/CD pipeline
-
-#### Scalability Design
-- **Microservices architecture** for independent scaling
-- **Database sharding strategy** for large deployments
-- **Caching layers** at multiple levels
-- **Load balancing** with auto-scaling
-
-### 3. **Research Depth** ⭐⭐⭐⭐⭐
-
-**Comprehensive Research Undertaken:**
-
-#### Problem Research
-- **6-month study** of municipal issue reporting systems across 5 cities
-- **500+ citizen interviews** to understand pain points
-- **Department workflow analysis** with 50+ municipal staff
-- **Competitive analysis** of 20+ existing solutions
-
-#### Technical Research
-- **Performance benchmarking** of different database solutions
-- **Security analysis** of civic platforms
-- **Accessibility compliance** research
-- **Mobile-first approach** based on usage statistics
-
-#### Implementation Research
-- **Pilot program** with 1000+ users in test city
-- **A/B testing** of different interface designs
-- **Performance monitoring** with real-user metrics
-- **User feedback loops** for continuous improvement
-
-### 4. **Clarity** ⭐⭐⭐⭐⭐
-
-**Clear Documentation and Communication:**
-
-#### Comprehensive Documentation
-- **This README** with complete technical details
-- **API documentation** with examples
-- **User guides** for different user roles
-- **Developer documentation** for contributors
-
-#### Visual Communication
-- **Architecture diagrams** for system understanding
-- **Flowcharts** for process visualization
-- **Wireframes** for interface design
-- **Data flow diagrams** for system interactions
-
-#### Code Clarity
-- **Clean, commented code** with JSDoc documentation
-- **Meaningful variable and function names**
-- **Consistent coding standards**
-- **Modular architecture** for easy understanding
-
-### 5. **Plagiarism-free** ⭐⭐⭐⭐⭐
-
-**Original Work Guarantee:**
-
-#### Code Originality
-- **100% original codebase** developed from scratch
-- **Custom algorithms** for report classification and assignment
-- **Unique UI/UX design** created specifically for this project
-- **Proprietary analytics engine** for insights generation
-
-#### Design Originality
-- **Custom design system** built for CivicTrack
-- **Original iconography** created for the platform
-- **Unique workflow design** based on research findings
-- **Innovative feature combinations** not found elsewhere
-
-#### Verification Methods
-- **Git commit history** showing original development
-- **Design process documentation** with initial sketches
-- **Research papers** referenced for methodology
-- **Team contributions** clearly documented
-
----
-
-## 🗺️ Future Roadmap
-
-### Phase 1: Foundation (Current)
-- ✅ Core reporting functionality
-- ✅ Basic admin dashboard
-- ✅ Public map interface
-- ✅ User authentication
-- ✅ Notification system
-
-### Phase 2: Enhancement (Round 2 - 3 months)
-- 🔄 AI-powered features
-- 🔄 Advanced analytics
-- 🔄 Mobile app development
-- 🔄 IoT integration
-- 🔄 Blockchain proof-of-concept
-
-### Phase 3: Expansion (6 months)
-- 📅 Multi-city support
-- 📅 Enterprise features
-- 📅 Advanced monetization
-- 📅 Internationalization
-- 📅 Advanced security features
-
-### Phase 4: Innovation (12 months)
-- 🎯 AR/VR integration
-- 🎯 Autonomous drone surveys
-- 🎯 Smart city integration
-- 🎯 Predictive maintenance
-- 🎯 Global deployment
-
-### Phase 5: Ecosystem (18 months)
-- 🌐 API marketplace
-- 🌐 Developer platform
-- 🌐 Partner integrations
-- 🌐 Open data initiative
-- 🌐 Civic tech foundation
-
----
-
-## 👥 Team Information
-
-### Core Team Members
-
-| Name | Role | Expertise | Contribution |
-|------|------|-----------|--------------|
-| **Team Leader** | Full Stack Developer | React, Firebase, Node.js | System architecture, Frontend development |
-| **Member 2** | Backend Developer | Cloud Functions, Firestore, Security | Backend services, Database design |
-| **Member 3** | UI/UX Designer | Figma, User Research, Prototyping | User experience, Interface design |
-| **Member 4** | Data Scientist | Python, ML, Analytics | AI features, Data analysis |
-| **Member 5** | DevOps Engineer | CI/CD, Cloud Infrastructure, Security | Deployment, Infrastructure |
-
-### Advisors
-| Name | Role | Organization | Contribution |
-|------|------|-------------|--------------|
-| **Municipal Expert** | Former City Commissioner | Government | Domain expertise, Policy guidance |
-| **Technology Advisor** | Senior Architect | Tech Company | Technical guidance, Best practices |
-| **Accessibility Expert** | Accessibility Consultant | Non-profit | Accessibility compliance, Testing |
-
-### Acknowledgments
-
-#### Open Source Libraries
-- **React** - UI library
-- **Firebase** - Backend services
-- **Leaflet** - Maps
-- **Material UI** - Component library
-- **Vite** - Build tool
-
-#### Data Sources
-- **OpenStreetMap** - Map tiles
-- **Government APIs** - Municipal data
-- **Public datasets** - Historical issue data
-
-#### Inspiration
-- **FixMyStreet** - UK's civic reporting platform
-- **SeeClickFix** - US-based reporting system
-- **Swachh Bharat Mission** - India's cleanliness initiative
 
 ---
 
@@ -3371,48 +3081,10 @@ SOFTWARE.
 
 ---
 
-## 📞 Contact Information
 
-### Project Lead
-**Name:** [Your Name]  
-**Email:** [your.email@example.com]  
-**GitHub:** [@yourusername](https://github.com/yourusername)  
-**LinkedIn:** [Your Profile](https://linkedin.com/in/yourprofile)
 
-### Team Contact
-**Team Email:** team@civictrack.app  
-**Website:** [https://civictrack.app](https://civictrack.app)  
-**Documentation:** [https://docs.civictrack.app](https://docs.civictrack.app)  
-**API Documentation:** [https://api.civictrack.app/docs](https://api.civictrack.app/docs)
 
-### Support Channels
-- **GitHub Issues:** For bug reports and feature requests
-- **Email Support:** support@civictrack.app
-- **Community Forum:** [community.civictrack.app](https://community.civictrack.app)
-- **Live Chat:** Available on website during business hours
 
----
-
-## 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/CivicTrack&type=Date)](https://star-history.com/#yourusername/CivicTrack&Date)
-
----
-
-## 📊 Project Statistics
-
-| Metric | Value |
-|--------|-------|
-| **Lines of Code** | 25,000+ |
-| **Test Coverage** | 95% |
-| **Performance Score** | 98/100 |
-| **Accessibility Score** | 100/100 |
-| **Security Score** | A+ |
-| **Documentation Coverage** | 100% |
-| **Active Contributors** | 5 |
-| **Development Time** | 3 months |
-| **Code Review Coverage** | 100% |
-| **Commit Frequency** | Daily |
 
 ---
 
@@ -3424,7 +3096,3 @@ The platform's focus on transparency, accountability, and efficiency addresses c
 
 ---
 
-*Last Updated: 31 December 2025*  
-*Version: 1.0.0*  
-*Documentation Status: Complete*  
-*Ready for Hackathon Submission*
