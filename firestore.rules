@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Helper function to check if user owns a document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own profile, admins can read all
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      
+      // Users can create their own profile on signup, admins can create any
+      allow create: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      
+      // Only admins can update user roles, users can update their own profile (except role)
+      allow update: if isAuthenticated() && (
+        (isOwner(userId) && !('role' in request.resource.data.diff(resource.data))) ||
+        isAdmin()
+      );
+      
+      // Only admins can delete users
+      allow delete: if isAdmin();
+    }
+
+    // Reports collection
+    match /reports/{reportId} {
+      // Anyone authenticated can read reports (for public map, citizens see their own, admins see all)
+      allow read: if isAuthenticated();
+      
+      // Only authenticated users can create reports
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.verified == false;
+      
+      // Users can update their own reports (only if status is pending), admins can update all
+      allow update: if isAuthenticated() && (
+        (isOwner(resource.data.userId) && resource.data.status == 'pending') ||
+        isAdmin()
+      );
+      
+      // Users can delete their own pending reports, admins can delete any
+      allow delete: if isAuthenticated() && (
+        (isOwner(resource.data.userId) && resource.data.status == 'pending') ||
+        isAdmin()
+      );
+    }
+
+    // Comments collection
+    match /comments/{commentId} {
+      // Authenticated users can read comments
+      allow read: if isAuthenticated();
+      
+      // Authenticated users can create comments
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      // Users can update their own comments, admins can update any
+      allow update: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+      
+      // Users can delete their own comments, admins can delete any
+      allow delete: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+    }
+
+    // Upvotes collection
+    match /upvotes/{upvoteId} {
+      // Authenticated users can read upvotes
+      allow read: if isAuthenticated();
+      
+      // Users can create upvotes for themselves
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      // Users can delete their own upvotes, admins can delete any
+      allow delete: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+    }
+  }
+}
+
+
