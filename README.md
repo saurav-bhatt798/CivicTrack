@@ -1,4 +1,10 @@
-
+🏙️ CivicTrack — Smart Public Issue Reporting Platform
+Report local problems. Track status. Help authorities act faster.
+CivicTrack is a web platform that connects citizens and municipal authorities to report, manage, and resolve civic issues like:
+🚧 Road damage
+💡 Street light failure
+🗑️ Garbage overflow
+🌳 Public property damage
 
 ## 📖 Table of Contents
 
