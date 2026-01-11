@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - CivicTrack</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Settings</h1>
+            <div class="user-info">
+                <span id="user-name">Loading...</span>
+                <button id="logout-btn" class="btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <nav class="dashboard-nav">
+            <a href="dashboard" class="nav-link">Dashboard</a>
+            <a href="profile.html" class="nav-link">Profile</a>
+            <a href="settings.html" class="nav-link active">Settings</a>
+        </nav>
+
+        <main class="dashboard-content">
+            <div class="settings-section">
+                <div class="settings-card">
+                    <h2>Account Settings</h2>
+
+                    <div class="setting-group">
+                        <h3>Change Password</h3>
+                        <form id="password-form">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password" name="currentPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password" name="newPassword" required minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password" name="confirmPassword" required minlength="6">
+                            </div>
+                            <button type="submit" class="btn-primary">Update Password</button>
+                        </form>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Notification Preferences</h3>
+                        <form id="notification-form">
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="emailNotifications" id="email-notifications" checked>
+                                    Email notifications for complaint updates
+                                </label>
+                            </div>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="smsNotifications" id="sms-notifications">
+                                    SMS notifications for urgent updates
+                                </label>
+                            </div>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="newsletter" id="newsletter">
+                                    Subscribe to CivicTrack newsletter
+                                </label>
+                            </div>
+                            <button type="submit" class="btn-primary">Save Preferences</button>
+                        </form>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Privacy Settings</h3>
+                        <form id="privacy-form">
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="profileVisibility" id="profile-visibility" checked>
+                                    Make my profile visible to authorities
+                                </label>
+                            </div>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="locationSharing" id="location-sharing" checked>
+                                    Share location data with authorities
+                                </label>
+                            </div>
+                            <button type="submit" class="btn-primary">Update Privacy</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h2>Account Management</h2>
+
+                    <div class="setting-group">
+                        <h3>Data Export</h3>
+                        <p>Download all your complaint data and account information.</p>
+                        <button id="export-data-btn" class="btn-secondary">Export My Data</button>
+                    </div>
+
+                    <div class="setting-group danger-zone">
+                        <h3>Danger Zone</h3>
+                        <p>Once you delete your account, there is no going back. Please be certain.</p>
+                        <button id="delete-account-btn" class="btn-danger">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2 id="modal-title">Confirm Action</h2>
+            <p id="modal-message">Are you sure you want to proceed?</p>
+            <div class="modal-actions">
+                <button id="confirm-btn" class="btn-danger">Confirm</button>
+                <button id="cancel-btn" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        // Load user settings
+        async function loadSettings() {
+            try {
+                const response = await fetch('/api/auth/check');
+                const data = await response.json();
+
+                if (data.authenticated) {
+                    currentUser = data.user;
+                    document.getElementById('user-name').textContent = currentUser.name;
+
+                    // Load user preferences (if any)
+                    await loadUserPreferences();
+                } else {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('Failed to load settings:', error);
+                window.location.href = '/login';
+            }
+        }
+
+        async function loadUserPreferences() {
+            try {
+                const response = await fetch('/api/users/preferences');
+                const data = await response.json();
+
+                if (data.success) {
+                    // Set form values based on preferences
+                    document.getElementById('email-notifications').checked = data.preferences.emailNotifications !== false;
+                    document.getElementById('sms-notifications').checked = data.preferences.smsNotifications || false;
+                    document.getElementById('newsletter').checked = data.preferences.newsletter || false;
+                    document.getElementById('profile-visibility').checked = data.preferences.profileVisibility !== false;
+                    document.getElementById('location-sharing').checked = data.preferences.locationSharing !== false;
+                }
+            } catch (error) {
+                console.error('Failed to load preferences:', error);
+            }
+        }
+
+        // Password change
+        document.getElementById('password-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                alert('Password must be at least 6 characters long!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/users/change-password', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        currentPassword: currentPassword,
+                        newPassword: newPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Password updated successfully!');
+                    this.reset();
+                } else {
+                    alert('Failed to update password: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Failed to update password:', error);
+                alert('Network error. Please try again.');
+            }
+        });
+
+        // Notification preferences
+        document.getElementById('notification-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const preferences = {
+                emailNotifications: document.getElementById('email-notifications').checked,
+                smsNotifications: document.getElementById('sms-notifications').checked,
+                newsletter: document.getElementById('newsletter').checked
+            };
+
+            try {
+                const response = await fetch('/api/users/preferences', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(preferences)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Notification preferences updated successfully!');
+                } else {
+                    alert('Failed to update preferences: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Failed to update preferences:', error);
+                alert('Network error. Please try again.');
+            }
+        });
+
+        // Privacy settings
+        document.getElementById('privacy-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const preferences = {
+                profileVisibility: document.getElementById('profile-visibility').checked,
+                locationSharing: document.getElementById('location-sharing').checked
+            };
+
+            try {
+                const response = await fetch('/api/users/privacy', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(preferences)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Privacy settings updated successfully!');
+                } else {
+                    alert('Failed to update privacy settings: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Failed to update privacy settings:', error);
+                alert('Network error. Please try again.');
+            }
+        });
+
+        // Export data
+        document.getElementById('export-data-btn').addEventListener('click', async function() {
+            try {
+                const response = await fetch('/api/users/export-data');
+                const data = await response.json();
+
+                if (data.success) {
+                    // Create and download JSON file
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `civictrack-data-${currentUser.id}-${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                } else {
+                    alert('Failed to export data: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Failed to export data:', error);
+                alert('Network error. Please try again.');
+            }
+        });
+
+        // Delete account
+        document.getElementById('delete-account-btn').addEventListener('click', function() {
+            showConfirmModal(
+                'Delete Account',
+                'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.',
+                async () => {
+                    try {
+                        const response = await fetch('/api/users/delete-account', {
+                            method: 'DELETE'
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            alert('Account deleted successfully.');
+                            window.location.href = '/';
+                        } else {
+                            alert('Failed to delete account: ' + data.message);
+                        }
+                    } catch (error) {
+                        console.error('Failed to delete account:', error);
+                        alert('Network error. Please try again.');
+                    }
+                }
+            );
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', async function() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        });
+
+        // Modal functions
+        function showConfirmModal(title, message, confirmCallback) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('confirm-modal').style.display = 'flex';
+
+            document.getElementById('confirm-btn').onclick = () => {
+                confirmCallback();
+                document.getElementById('confirm-modal').style.display = 'none';
+            };
+
+            document.getElementById('cancel-btn').onclick = () => {
+                document.getElementById('confirm-modal').style.display = 'none';
+            };
+        }
+
+        loadSettings();
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - CivicTrack</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>My Profile</h1>
+            <div class="user-info">
+                <span id="user-name">Loading...</span>
+                <button id="logout-btn" class="btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <nav class="dashboard-nav">
+            <a href="dashboard" class="nav-link">Dashboard</a>
+            <a href="profile.html" class="nav-link active">Profile</a>
+            <a href="settings.html" class="nav-link">Settings</a>
+        </nav>
+
+        <main class="dashboard-content">
+            <div class="profile-section">
+                <div class="profile-card">
+                    <h2>Personal Information</h2>
+                    <form id="profile-form">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/dataManager.js"></script>
+    <script>
+        // Load user profile
+        function loadProfile() {
+            try {
+                const user = window.dataManager.getCurrentUser();
+
+                if (user) {
+                    document.getElementById('user-name').textContent = user.name;
+                    document.getElementById('name').value = user.name;
+                    document.getElementById('email').value = user.email;
+                    document.getElementById('phone').value = user.phone || '';
+                    document.getElementById('city').value = user.city || '';
+                } else {
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                console.error('Failed to load profile:', error);
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Update profile
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const updatedUser = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                city: formData.get('city')
+            };
+
+            try {
+                const success = window.dataManager.updateUserProfile(updatedUser);
+
+                if (success) {
+                    alert('Profile updated successfully!');
+                    loadProfile();
+                } else {
+                    alert('Failed to update profile');
+                }
+            } catch (error) {
+                console.error('Failed to update profile:', error);
+                alert('Error updating profile. Please try again.');
+            }
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            try {
+                window.dataManager.clearCurrentUser();
+                window.location.href = '/index.html';
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        });
+
+        loadProfile();
+    </script>
+</body>
+</html>

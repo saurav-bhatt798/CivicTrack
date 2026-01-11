@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - CivicTrack</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <h1>Contact Us</h1>
+            <a href="index.html" class="btn-secondary">Back to Home</a>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="contact-section">
+                <div class="contact-info">
+                    <h2>Get in Touch</h2>
+                    <p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <h3>📧 Email</h3>
+                            <p>support@civictrack.dev</p>
+                            <p>General inquiries and support</p>
+                        </div>
+
+                        <div class="contact-item">
+                            <h3>📞 Phone</h3>
+                            <p>+1 (555) 123-4567</p>
+                            <p>Mon-Fri, 9AM-6PM</p>
+                        </div>
+
+                        <div class="contact-item">
+                            <h3>🏢 Office</h3>
+                            <p>123 Civic Center Drive<br>City, State 12345</p>
+                            <p>Visit us during business hours</p>
+                        </div>
+
+                        <div class="contact-item">
+                            <h3>⏰ Response Time</h3>
+                            <p>Within 24 hours</p>
+                            <p>For most inquiries</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h2>Send us a Message</h2>
+                    <form id="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Name *</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <select id="subject" name="subject" required>
+                                <option value="">Select a subject</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="technical">Technical Support</option>
+                                <option value="complaint">Complaint Issue</option>
+                                <option value="feedback">Feedback</option>
+                                <option value="partnership">Partnership</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" rows="6" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="newsletter" id="newsletter">
+                                Subscribe to our newsletter for updates
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Send Message</button>
+                    </form>
+
+                    <div id="form-message" class="form-message" style="display: none;"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(this);
+            const formMessage = document.getElementById('form-message');
+
+            // Reset message
+            formMessage.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    formMessage.className = 'form-message success';
+                    formMessage.textContent = 'Thank you for your message! We\'ll get back to you soon.';
+                    this.reset();
+                } else {
+                    formMessage.className = 'form-message error';
+                    formMessage.textContent = data.message || 'Failed to send message. Please try again.';
+                }
+            } catch (error) {
+                console.error('Failed to send message:', error);
+                formMessage.className = 'form-message error';
+                formMessage.textContent = 'Network error. Please try again later.';
+            } finally {
+                formMessage.style.display = 'block';
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+
+    <style>
+        body {
+            font-family: 'Roboto', 'Noto Sans', Arial, sans-serif;
+            background-color: #F5F5F5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #128807 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #CCCCCC;
+        }
+
+        .dashboard-header h1 {
+            color: #333333;
+            margin: 0;
+            font-family: 'Roboto Condensed', Arial, sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .btn-secondary {
+            background: #0066CC;
+            color: #FFFFFF;
+            border: 2px solid #0066CC;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Roboto Condensed', Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #004499;
+            border-color: #004499;
+            color: #FFFFFF;
+        }
+
+        .contact-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .contact-info, .contact-form {
+            background: #FFFFFF;
+            padding: 30px;
+            border: 1px solid #CCCCCC;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .contact-info h2, .contact-form h2 {
+            color: #333333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+            border-bottom: 2px solid #FF9933;
+            padding-bottom: 10px;
+        }
+
+        .contact-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .contact-item {
+            padding: 20px;
+            background: #F5F5F5;
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .contact-item h3 {
+            color: #0066CC;
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .contact-item p {
+            margin: 5px 0;
+            color: #666666;
+            font-size: 14px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333333;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+            font-size: 16px;
+            background: #FFFFFF;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #0066CC;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: normal;
+            color: #666666;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .btn-primary {
+            background: #FF9933;
+            color: #FFFFFF;
+            border: 2px solid #FF9933;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-family: 'Roboto Condensed', Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary:hover {
+            background: #FF8C00;
+            border-color: #FF8C00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 153, 51, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #CCCCCC;
+            border-color: #CCCCCC;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .form-message {
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-weight: 500;
+            border-left: 4px solid;
+        }
+
+        .form-message.success {
+            background: rgba(18, 136, 7, 0.1);
+            color: #128807;
+            border-color: #128807;
+        }
+
+        .form-message.error {
+            background: rgba(220, 20, 60, 0.1);
+            color: #DC143C;
+            border-color: #DC143C;
+        }
+
+        @media (max-width: 768px) {
+            .contact-section {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .contact-details {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</body>
+</html>

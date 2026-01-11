@@ -1,22 +1,1537 @@
-<!doctype html>
-<html lang="en">
-  <head>
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="CivicTrack - Report and track public issues in your community" />
-    <meta name="theme-color" content="#1976d2" />
-    <link rel="apple-touch-icon" href="/logo192.png" />
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
-    <title>CivicTrack - Community Issue Reporting</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CivicTrack – Smart Public Issue Reporting Platform</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏙️</text></svg>" />
+    
+    <!-- Clean CSS Structure -->
+    <style>
+    /* ============================================
+       CIVICTRACK - MAIN STYLES
+       Clean and Organized Structure
+       ============================================ */
+    
+    /* 1. CSS VARIABLES */
+    :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --light-color: #f8f9fa;
+        --dark-color: #34495e;
+        --border-color: #ecf0f1;
+        --shadow-light: 0 2px 4px rgba(0,0,0,0.1);
+        --shadow-medium: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    /* 2. BASE RESET & TYPOGRAPHY */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #333;
+        background-color: #fff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    main {
+        flex: 1;
+    }
+    
+    /* 3. LAYOUT STRUCTURE */
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+    
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -15px;
+    }
+    
+    .col {
+        padding: 0 15px;
+        flex: 1;
+    }
+    
+    /* 4. HEADER STYLES */
+    #mainHeader {
+        background: var(--primary-color);
+        color: white;
+        box-shadow: var(--shadow-medium);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .header-wrapper {
+        padding: 15px 0;
+    }
+    
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .logo img {
+        height: 50px;
+        width: auto;
+    }
+    
+    .logo_text {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .logo_text strong {
+        font-size: 22px;
+        font-weight: 700;
+    }
+    
+    .logo_subtitle {
+        font-size: 13px;
+        opacity: 0.9;
+        color: #ecf0f1;
+    }
+    
+    /* 5. NAVIGATION - FIXED WITH BETTER COLORS */
+    .menuWrapper {
+        background: #34495e;
+    }
+
+    .menu {
+        width: 100%;
+    }
+
+    .nav {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+    
+    .nav > li {
+        position: relative;
+    }
+    
+    .nav > li > a {
+        display: block;
+        padding: 15px 18px;
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+    }
+    
+    .nav > li > a:hover,
+    .nav > li.active > a {
+        background: rgba(255,255,255,0.1);
+        color: white;
+        border-bottom-color: var(--accent-color);
+    }
+    
+    .has-sub > a::after {
+        content: ' ▼';
+        font-size: 10px;
+        margin-left: 5px;
+    }
+    
+    .sub-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        min-width: 220px;
+        box-shadow: var(--shadow-medium);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+        border-radius: 0 0 4px 4px;
+        overflow: hidden;
+    }
+    
+    .sub-menu li {
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .sub-menu li:last-child {
+        border-bottom: none;
+    }
+    
+    .sub-menu a {
+        display: block;
+        padding: 12px 18px;
+        color: var(--dark-color);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .sub-menu a:hover {
+        background: rgba(52, 152, 219, 0.1);
+        color: var(--secondary-color);
+        padding-left: 22px;
+    }
+    
+    .has-sub:hover .sub-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    /* Mobile menu toggle */
+    .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: white;
+        cursor: pointer;
+        padding: 10px;
+    }
+    
+    /* 6. HERO SECTION */
+    .hero-section {
+        background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(52, 152, 219, 0.9)), url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+    }
+    
+    .hero-title {
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .hero-subtitle {
+        font-size: 18px;
+        margin-bottom: 30px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0.95;
+    }
+    
+    /* 7. BUTTONS */
+    .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin: 5px;
+    }
+    
+    .btn:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: var(--secondary-color);
+    }
+    
+    .btn-secondary:hover {
+        background: #2980b9;
+    }
+    
+    .ml-2 {
+        margin-left: 10px;
+    }
+    
+    /* 8. NOTICES & UPDATES SECTION */
+    .notices-section {
+        padding: 60px 0;
+        background: white;
+    }
+
+    .section-title {
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+        font-size: 32px;
+    }
+    
+    .section-subtitle {
+        text-align: center;
+        color: var(--dark-color);
+        margin-bottom: 40px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .notices-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
+
+    .notice-card {
+        background: var(--light-color);
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: var(--shadow-light);
+        border-left: 4px solid var(--secondary-color);
+        transition: transform 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .notice-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .notice-date {
+        font-size: 14px;
+        color: var(--accent-color);
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .notice-date::before {
+        content: '📅';
+        font-size: 12px;
+    }
+
+    .notice-title {
+        font-size: 18px;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .notice-content {
+        color: var(--dark-color);
+        margin-bottom: 20px;
+        line-height: 1.5;
+        flex: 1;
+    }
+
+    .notice-link {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .notice-link:hover {
+        text-decoration: underline;
+        gap: 8px;
+    }
+
+    /* 9. STATISTICS SECTION */
+    .stats-section {
+        background: #f8f9fa;
+        padding: 60px 0;
+        text-align: center;
+    }
+    
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 40px 20px;
+        border-radius: 8px;
+        box-shadow: var(--shadow-light);
+        transition: transform 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
+    
+    .stat-number {
+        font-size: 48px;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    .stat-label {
+        font-size: 18px;
+        color: var(--dark-color);
+        font-weight: 500;
+    }
+    
+    /* 10. HOW IT WORKS SECTION */
+    .how-it-works {
+        padding: 80px 0;
+        background: white;
+    }
+    
+    .steps-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
+    
+    .step {
+        text-align: center;
+        padding: 30px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: var(--shadow-light);
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+    
+    .step:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 20px;
+        margin: 0 auto 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .step-title {
+        font-size: 20px;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+    }
+    
+    /* 11. QUICK LINKS */
+    .quick-links {
+        background: #f8f9fa;
+        padding: 60px 0;
+    }
+    
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 25px;
+    }
+    
+    .link-card {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--dark-color);
+        display: block;
+    }
+    
+    .link-card:hover {
+        background: var(--secondary-color);
+        color: white;
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
+    
+    .link-card h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: inherit;
+    }
+    
+    .link-card p {
+        font-size: 14px;
+        opacity: 0.8;
+        color: inherit;
+    }
+
+    /* 12. ABOUT SECTION */
+    .about-section {
+        padding: 80px 0;
+        background: white;
+    }
+
+    .about-content {
+        max-width: 900px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+    .about-content h3 {
+        color: var(--primary-color);
+        font-size: 24px;
+        margin-bottom: 20px;
+        margin-top: 40px;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 10px;
+    }
+
+    .about-content h3:first-child {
+        margin-top: 0;
+    }
+
+    .about-content p {
+        margin-bottom: 20px;
+        color: var(--dark-color);
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+    }
+
+    .feature-list li {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--dark-color);
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .feature-list li::before {
+        content: '✓';
+        color: var(--success-color);
+        font-weight: bold;
+    }
+
+    .feature-list li:last-child {
+        border-bottom: none;
+    }
+
+    .feature-list strong {
+        color: var(--primary-color);
+    }
+
+    /* 13. FAQ SECTION */
+    .faq-section {
+        padding: 80px 0;
+        background: #f8f9fa;
+    }
+
+    .faq-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 25px;
+        margin-top: 40px;
+    }
+
+    .faq-item {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: var(--shadow-light);
+        transition: transform 0.3s ease;
+    }
+    
+    .faq-item:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .faq-item h3 {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .faq-item h3::before {
+        content: '❓';
+        font-size: 16px;
+    }
+
+    .faq-item p {
+        color: var(--dark-color);
+        line-height: 1.6;
+    }
+
+    /* 14. CONTACT SECTION */
+    .contact-section {
+        padding: 80px 0;
+        background: white;
+    }
+
+    .contact-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-top: 40px;
+    }
+
+    .contact-info {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 8px;
+    }
+
+    .contact-info h3 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        font-size: 22px;
+    }
+
+    .contact-form {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 8px;
+    }
+
+    .contact-form h3 {
+        color: var(--primary-color);
+        margin-bottom: 25px;
+        font-size: 22px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--dark-color);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    /* 15. DISCLAIMER SECTION */
+    .disclaimer-section {
+        padding: 60px 0;
+        background: white;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .disclaimer-content {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #f8f9fa;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: var(--shadow-light);
+        line-height: 1.6;
+    }
+
+    .disclaimer-content p {
+        margin-bottom: 20px;
+    }
+
+    .disclaimer-content p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .disclaimer-content strong {
+        color: var(--primary-color);
+    }
+
+    /* 16. BACK TO TOP BUTTON */
+    #goToTop {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        display: none;
+        z-index: 1000;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        box-shadow: var(--shadow-medium);
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    #goToTop:hover {
+        background: #c0392b;
+        transform: scale(1.1);
+    }
+
+    /* 17. FOOTER */
+    #mainFooter {
+        background: var(--primary-color);
+        color: white;
+        margin-top: auto;
+    }
+    
+    .footer-links {
+        background: #34495e;
+        padding: 50px 0;
+    }
+    
+    .footer-bottom {
+        background: #1a252f;
+        padding: 30px 0;
+        text-align: center;
+    }
+    
+    .footer-links h3 {
+        color: white;
+        margin-bottom: 20px;
+        font-size: 18px;
+        border-bottom: 2px solid var(--accent-color);
+        padding-bottom: 10px;
+        display: inline-block;
+    }
+    
+    .footer-links p {
+        color: #bdc3c7;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+    
+    .footerMenu {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 25px;
+        list-style: none;
+        margin-bottom: 20px;
+    }
+    
+    .footerMenu a {
+        color: #bdc3c7;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .footerMenu a:hover {
+        color: white;
+        text-decoration: underline;
+    }
+
+    .footer-links-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-links-list li {
+        margin-bottom: 12px;
+    }
+
+    .footer-links-list a {
+        color: #bdc3c7;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .footer-links-list a:hover {
+        color: white;
+        padding-left: 5px;
+    }
+    
+    .footer-links-list a::before {
+        content: '→';
+        font-size: 12px;
+        opacity: 0.7;
+    }
+
+    .copyright-text {
+        color: #95a5a6;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    .copyright-text p {
+        margin-bottom: 8px;
+    }
+    
+    .copyright-text p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* 18. UTILITY CLASSES */
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .text-left { text-align: left; }
+    
+    .mt-1 { margin-top: 10px; }
+    .mt-2 { margin-top: 20px; }
+    .mt-3 { margin-top: 30px; }
+    .mt-4 { margin-top: 40px; }
+    .mt-5 { margin-top: 50px; }
+    
+    .mb-1 { margin-bottom: 10px; }
+    .mb-2 { margin-bottom: 20px; }
+    .mb-3 { margin-bottom: 30px; }
+    .mb-4 { margin-bottom: 40px; }
+    .mb-5 { margin-bottom: 50px; }
+    
+    .py-1 { padding-top: 10px; padding-bottom: 10px; }
+    .py-2 { padding-top: 20px; padding-bottom: 20px; }
+    .py-3 { padding-top: 30px; padding-bottom: 30px; }
+    .py-4 { padding-top: 40px; padding-bottom: 40px; }
+    .py-5 { padding-top: 50px; padding-bottom: 50px; }
+    
+    /* 19. RESPONSIVE DESIGN */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 32px;
+        }
+        
+        .hero-subtitle {
+            font-size: 16px;
+        }
+        
+        .section-title {
+            font-size: 28px;
+        }
+        
+        .menu-toggle {
+            display: block;
+        }
+        
+        .menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #34495e;
+            box-shadow: var(--shadow-medium);
+            z-index: 1000;
+        }
+        
+        .menu.active {
+            display: block;
+        }
+        
+        .nav {
+            flex-direction: column;
+        }
+        
+        .nav > li > a {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sub-menu {
+            position: static;
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+            box-shadow: none;
+            display: none;
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .sub-menu.mobile-open {
+            display: block;
+        }
+        
+        .has-sub > a::after {
+            content: ' ▶';
+        }
+        
+        .has-sub.active > a::after {
+            content: ' ▼';
+        }
+        
+        .stats-container,
+        .steps-container,
+        .faq-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .links-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .contact-container {
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        .footerMenu {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+        
+        .footer-links .row {
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .footer-links .col {
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 28px;
+        }
+        
+        .hero-subtitle {
+            font-size: 15px;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+        }
+        
+        .links-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .ml-2 {
+            margin-left: 0;
+        }
+    }
+    
+    /* 20. ACCESSIBILITY */
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        white-space: nowrap;
+        border: 0;
+    }
+    
+    :focus {
+        outline: 3px solid var(--accent-color);
+        outline-offset: 2px;
+    }
+    
+    .skipContent {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--accent-color);
+        color: white;
+        padding: 8px;
+        z-index: 1001;
+        text-decoration: none;
+    }
+    
+    .skipContent:focus {
+        top: 0;
+    }
+    
+    /* 21. PRINT STYLES */
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+        
+        body {
+            font-size: 12pt;
+            line-height: 1.4;
+        }
+        
+        .hero-section,
+        .stats-section {
+            break-inside: avoid;
+        }
+        
+        a {
+            text-decoration: none;
+            color: black;
+        }
+    }
+    </style>
+</head>
+
+<body class="wp-singular page-template-default page page-id-6721 wp-theme-sdo-theme lang-en style-5 civic-tracker">
+    <!-- Header Section -->
+    <header id="mainHeader" class="no-print">
+        <!-- Main Header -->
+        <div class="header-wrapper">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="logo">
+                            <a href="index.html" title="Go to home" class="site_logo">
+                                <div class="logo_text">
+                                    <strong>CivicTrack</strong>
+                                    <span class="logo_subtitle">Smart Public Issue Reporting Platform</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col text-right">
+                        <button class="menu-toggle" aria-label="Toggle navigation menu">☰</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <div class="menuWrapper">
+            <div class="container">
+                <nav class="menu" aria-label="Main Navigation">
+                    <ul class="nav">
+                        <li class="active"><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li class="has-sub">
+                            <a href="report-issue.html">Report Issue</a>
+                            <ul class="sub-menu">
+                                <li><a href="road-damage.html">Road Damage</a></li>
+                                <li><a href="street-light.html">Street Light</a></li>
+                                <li><a href="garbage.html">Garbage Overflow</a></li>
+                                <li><a href="property-damage.html">Public Property</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="track-status.html">Track Status</a></li>
+                        <li><a href="public-map.html">Public Map</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="register.html">Sign Up</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="SkipContent">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <h1 class="hero-title">CivicTrack — Smart Public Issue Reporting Platform</h1>
+                <p class="hero-subtitle">
+                    Report local problems. Track status. Help authorities act faster. Report civic issues like road damage, street light failure, garbage overflow, and public property damage.
+                </p>
+                <div class="mt-4">
+                    <a href="report-issue.html" class="btn">Report an Issue</a>
+                    <a href="track-status.html" class="btn btn-secondary ml-2">Track Complaint</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="stats-section">
+            <div class="container">
+                <h2 class="section-title">CivicTrack Impact Statistics</h2>
+                <p class="section-subtitle">Real-time data from our platform (Updated daily)</p>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number">28.5K</div>
+                        <div class="stat-label">Total Issues Reported</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">26.9K</div>
+                        <div class="stat-label">Issues Resolved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1.6K</div>
+                        <div class="stat-label">Currently Active</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">18.2</div>
+                        <div class="stat-label">Avg. Resolution Hours</div>
+                    </div>
+                </div>
+                <p class="text-center mt-4" style="color: #666; font-size: 14px;">Data as of January 28, 2026 | Source: CivicTrack Database</p>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works">
+            <div class="container">
+                <h2 class="section-title">How CivicTrack Works</h2>
+                <p class="section-subtitle">Simple steps from reporting to resolution</p>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Report Issue</h3>
+                        <p>Citizen takes photo of issue, adds description, and pins location on map. Submission takes under 2 minutes.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">System Verification</h3>
+                        <p>AI checks for duplicates, categorizes issue, and assigns priority level. Complaint appears on public map.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Authority Assignment</h3>
+                        <p>Municipal admin reviews and assigns to relevant department. Status changes to "In Progress".</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3 class="step-title">Resolution & Feedback</h3>
+                        <p>Department resolves issue, uploads completion photo. Citizen gets notification and can rate the service.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Notices & Updates Section -->
+        <section class="notices-section">
+            <div class="container">
+                <h2 class="section-title">Platform Updates</h2>
+                <p class="section-subtitle">Latest features and announcements</p>
+
+                <div class="notices-container">
+                    <div class="notice-card">
+                        <div class="notice-date">January 25, 2026</div>
+                        <h3 class="notice-title">New Dashboard Features</h3>
+                        <p class="notice-content">Added advanced filtering options and export functionality to the admin dashboard for better complaint management.</p>
+                        <a href="#" class="notice-link">Learn More →</a>
+                    </div>
+                    <div class="notice-card">
+                        <div class="notice-date">January 20, 2026</div>
+                        <h3 class="notice-title">New Category: Public Parks</h3>
+                        <p class="notice-content">Added new category for reporting issues in public parks - broken benches, damaged playground equipment, unclean walking paths.</p>
+                        <a href="#" class="notice-link">Learn More →</a>
+                    </div>
+                    <div class="notice-card">
+                        <div class="notice-date">January 15, 2026</div>
+                        <h3 class="notice-title">AI Duplicate Detection</h3>
+                        <p class="notice-content">Implemented AI-based duplicate report detection to reduce redundancy and help authorities focus on unique issues.</p>
+                        <a href="#" class="notice-link">See How It Works →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Links Section -->
+        <section class="quick-links">
+            <div class="container">
+                <h2 class="section-title">Quick Access</h2>
+                <p class="section-subtitle">Everything you need in one place</p>
+                
+                <div class="links-grid">
+                    <a href="report-issue.html" class="link-card">
+                        <h3>🚧 Report Issue</h3>
+                        <p>Submit new complaint</p>
+                    </a>
+                    <a href="track-status.html" class="link-card">
+                        <h3>📊 Track Status</h3>
+                        <p>Check your complaints</p>
+                    </a>
+                    <a href="public-map.html" class="link-card">
+                        <h3>🗺️ Public Map</h3>
+                        <p>View all local issues</p>
+                    </a>
+                    <a href="login.html" class="link-card">
+                        <h3>🔐 Citizen Login</h3>
+                        <p>Access your account</p>
+                    </a>
+                    <a href="admin-login.html" class="link-card">
+                        <h3>🏢 Admin Login</h3>
+                        <p>Authority dashboard</p>
+                    </a>
+                    <a href="faq.html" class="link-card">
+                        <h3>❓ FAQ & Help</h3>
+                        <p>Find answers</p>
+                    </a>
+                    <a href="privacy-policy.html" class="link-card">
+                        <h3>🔒 Privacy Policy</h3>
+                        <p>Data protection</p>
+                    </a>
+                    <a href="terms-of-service.html" class="link-card">
+                        <h3>📄 Terms of Service</h3>
+                        <p>Platform rules</p>
+                    </a>
+                    <a href="contact.html" class="link-card">
+                        <h3>📞 Contact Support</h3>
+                        <p>Get help</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="faq-section">
+            <div class="container">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">Everything you need to know about using CivicTrack</p>
+
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <h3>How do I report an issue?</h3>
+                        <p>Click "Report Issue" button, select category (road, street light, garbage, etc.), upload photo, add description, pin location on map, and submit.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Do I need to create an account?</h3>
+                        <p>Yes, you need to sign up to report issues and track your complaints. This helps us prevent spam and allows us to notify you about status updates.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>How long does it take to resolve issues?</h3>
+                        <p>Average resolution time is 18 hours. Emergency issues (like broken water mains) are prioritized and typically resolved within 6 hours.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Can I report anonymously?</h3>
+                        <p>For tracking and follow-up, we require registration. However, your personal details are not displayed publicly on the complaint map.</p>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="faq.html" class="btn">View All FAQ</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="mainFooter" class="no-print">
+        <!-- Footer Links -->
+        <div class="footer-links">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h3>About CivicTrack</h3>
+                        <p>CivicTrack is a smart public issue reporting platform that connects citizens with authorities for faster civic problem resolution.</p>
+                        <p><strong>Platform:</strong> Web Application</p>
+                        <p><strong>Status:</strong> Active Project</p>
+                    </div>
+                    <div class="col">
+                        <h3>Quick Links</h3>
+                        <ul class="footer-links-list">
+                            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                            <li><a href="terms-of-service.html">Terms of Service</a></li>
+                            <li><a href="contact.html">Contact Support</a></li>
+                            <li><a href="faq.html">FAQ & Help</a></li>
+                            <li><a href="report-issue.html">Report Issue</a></li>
+                            <li><a href="track-status.html">Track Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h3>Contact & Support</h3>
+                        <p><strong>Email:</strong> support@civictrack.dev</p>
+                        <p><strong>Report Issues:</strong> report@civictrack.dev</p>
+                        <p><strong>Technical Support:</strong> tech@civictrack.dev</p>
+                        <p><strong>Office Hours:</strong> Mon-Fri, 9AM-6PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <nav class="footerMenu">
+                            <a href="privacy-policy.html">Privacy</a>
+                            <a href="terms-of-service.html">Terms</a>
+                            <a href="contact.html">Contact</a>
+                            <a href="faq.html">FAQ</a>
+                            <a href="report-issue.html">Report Issue</a>
+                            <a href="track-status.html">Track Status</a>
+                        </nav>
+                        
+                        <div class="copyright-text mt-3">
+                            <p>© 2026 CivicTrack — Smart Public Issue Reporting Platform. All rights reserved.</p>
+                            <p>Built with modern web technologies for efficient civic issue resolution.</p>
+                            <p class="mt-2"><strong>Platform Version:</strong> 2.0.1 | <strong>Last Updated:</strong> January 28, 2026</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Back to Top Button -->
+        <button id="goToTop" class="btn" aria-label="Go to top">↑</button>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/dataManager.js"></script>
+    <script>
+    // ============================================
+    // CIVICTRACK - MAIN JAVASCRIPT
+    // ============================================
+
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('CivicTrack Platform Loaded');
+        
+        initializeComponents();
+        setupNavigation();
+        setupAccessibility();
+        setupBackToTop();
+        updateStatistics();
+        setupSmoothScrolling();
+    });
+
+    function initializeComponents() {
+        console.log('Initializing CivicTrack components...');
+        
+        // Mobile menu toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menu = document.querySelector('.menu');
+        
+        if (menuToggle && menu) {
+            menuToggle.addEventListener('click', function() {
+                menu.classList.toggle('active');
+                this.setAttribute('aria-expanded', menu.classList.contains('active'));
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
+                    menu.classList.remove('active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+        
+        // Mobile sub-menu toggle
+        const hasSubItems = document.querySelectorAll('.has-sub > a');
+        hasSubItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    const parent = this.parentElement;
+                    const subMenu = this.nextElementSibling;
+                    
+                    // Close other sub-menus
+                    document.querySelectorAll('.has-sub').forEach(el => {
+                        if (el !== parent) {
+                            el.classList.remove('active');
+                            el.querySelector('.sub-menu').classList.remove('mobile-open');
+                        }
+                    });
+                    
+                    // Toggle current sub-menu
+                    parent.classList.toggle('active');
+                    if (subMenu) {
+                        subMenu.classList.toggle('mobile-open');
+                    }
+                }
+            });
+        });
+    }
+
+    function updateStatistics() {
+        const stats = {
+            totalComplaints: 28500,
+            resolvedComplaints: 26900,
+            pendingComplaints: 1600,
+            avgTime: 18.2
+        };
+        
+        document.getElementById('totalComplaints').textContent = '28.5K';
+        document.getElementById('resolvedComplaints').textContent = '26.9K';
+        document.getElementById('pendingComplaints').textContent = '1.6K';
+        document.getElementById('avgTime').textContent = '18.2';
+        
+        console.log('Statistics updated');
+    }
+
+    function setupNavigation() {
+        const navItems = document.querySelectorAll('.nav > li > a');
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        
+        navItems.forEach(item => {
+            const href = item.getAttribute('href');
+            if (href === currentPage) {
+                item.parentElement.classList.add('active');
+            }
+            
+            item.addEventListener('click', function(e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    return;
+                }
+                
+                navItems.forEach(nav => nav.parentElement.classList.remove('active'));
+                this.parentElement.classList.add('active');
+                
+                if (window.innerWidth <= 768) {
+                    const menu = document.querySelector('.menu');
+                    const menuToggle = document.querySelector('.menu-toggle');
+                    if (menu && menuToggle) {
+                        menu.classList.remove('active');
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+        });
+    }
+
+    function setupSmoothScrolling() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                
+                const targetId = href.substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    e.preventDefault();
+                    history.pushState(null, null, href);
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    targetElement.setAttribute('tabindex', '-1');
+                    targetElement.focus();
+                    
+                    if (window.innerWidth <= 768) {
+                        const menu = document.querySelector('.menu');
+                        const menuToggle = document.querySelector('.menu-toggle');
+                        if (menu && menuToggle) {
+                            menu.classList.remove('active');
+                            menuToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    function setupAccessibility() {
+        const skipLink = document.querySelector('.skipContent');
+        if (skipLink) {
+            skipLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.getElementById('SkipContent');
+                if (target) {
+                    target.setAttribute('tabindex', '-1');
+                    target.focus();
+                }
+            });
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-navigation');
+            }
+        });
+        
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('keyboard-navigation');
+        });
+    }
+
+    function setupBackToTop() {
+        const backToTopBtn = document.getElementById('goToTop');
+        
+        if (backToTopBtn) {
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopBtn.style.display = 'flex';
+                } else {
+                    backToTopBtn.style.display = 'none';
+                }
+            });
+            
+            backToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+    }
+
+    window.addEventListener('popstate', function() {
+        const hash = window.location.hash;
+        if (hash) {
+            const target = document.getElementById(hash.substring(1));
+            if (target) {
+                target.scrollIntoView();
+            }
+        }
+    });
+    </script>
+</body>
 </html>
-
-

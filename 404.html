@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - CivicTrack</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <div class="error-page">
+            <div class="error-content">
+                <div class="error-code">404</div>
+                <h1>Page Not Found</h1>
+                <p>The page you're looking for doesn't exist or has been moved.</p>
+
+                <div class="error-actions">
+                    <a href="index.html" class="btn-primary">Go Home</a>
+                    <a href="contact.html" class="btn-secondary">Contact Support</a>
+                </div>
+
+                <div class="error-suggestions">
+                    <h3>What can you do?</h3>
+                    <ul>
+                        <li>Check if the URL is correct</li>
+                        <li>Go back to the previous page</li>
+                        <li>Visit our <a href="faq.html">FAQ page</a> for help</li>
+                        <li>Contact us if you believe this is an error</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="error-illustration">
+                <div class="illustration">
+                    <div class="circle"></div>
+                    <div class="circle small"></div>
+                    <div class="magnifier">
+                        <div class="handle"></div>
+                        <div class="glass"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .error-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            padding: 40px 20px;
+            flex-wrap: wrap;
+        }
+
+        .error-content {
+            flex: 1;
+            max-width: 500px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+
+        .error-content h1 {
+            color: #2c3e50;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .error-content p {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #d5dbdb;
+        }
+
+        .error-suggestions {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+
+        .error-suggestions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .error-suggestions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .error-suggestions li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #555;
+        }
+
+        .error-suggestions li:last-child {
+            border-bottom: none;
+        }
+
+        .error-suggestions a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .error-suggestions a:hover {
+            text-decoration: underline;
+        }
+
+        .error-illustration {
+            flex: 1;
+            max-width: 400px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .illustration {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .circle {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #ecf0f1;
+            top: 25px;
+            left: 25px;
+        }
+
+        .circle.small {
+            width: 100px;
+            height: 100px;
+            background: #bdc3c7;
+            top: 50px;
+            left: 50px;
+        }
+
+        .magnifier {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .handle {
+            position: absolute;
+            width: 20px;
+            height: 60px;
+            background: #34495e;
+            border-radius: 10px;
+            top: 20px;
+            right: 10px;
+            transform: rotate(45deg);
+        }
+
+        .glass {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 8px solid #34495e;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .error-page {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .error-content, .error-illustration {
+                max-width: 100%;
+            }
+
+            .error-code {
+                font-size: 80px;
+            }
+
+            .error-content h1 {
+                font-size: 28px;
+            }
+
+            .error-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 200px;
+            }
+        }
+    </style>
+</body>
+</html>
